@@ -41,6 +41,13 @@ class RuntimeConfig(BaseModel):
     retry_backoff_seconds: int
     switch_api_key_on_rate_limit: bool
     dry_run: bool
+    
+    # Loop mode configuration
+    loop_enabled: bool = False
+    loop_interval_seconds: int = 300
+    idle_interval_seconds: int = 300
+    error_cooldown_seconds: int = 120
+    max_cycles: int | None = None
 
 
 class SimilarityConfig(BaseModel):

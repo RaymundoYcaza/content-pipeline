@@ -1,9 +1,26 @@
-.venv/
+```
+# Python
 __pycache__/
 *.pyc
-.env
-.cache/
-.pytest_cache/
-.coverage
-htmlcov/
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+.eggs/
+.egg-info/
+
+# Build and distribution artifacts
+dist/
+build/
+*.egg-info/
+
+# Logs
 *.log
+
+# Environment variables
+.env
+.env.local
+.env.*
+```

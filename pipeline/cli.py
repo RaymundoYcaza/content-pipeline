@@ -1,5 +1,6 @@
 from pathlib import Path
 import os
+import logging
 import typer
 from rich.console import Console
 from rich.table import Table
@@ -13,6 +14,7 @@ from pipeline.core.corpus import load_published_titles
 from pipeline.core.embeddings import EmbeddingService
 from pipeline.core.env import load_dotenv
 from pipeline.core.frontmatter_manager import FrontmatterManager
+from pipeline.core.loop_orchestrator import LoopOrchestrator
 from pipeline.core.provider_router import ProviderRouter
 from pipeline.core.similarity_engine import SimilarityEngine
 from pipeline.core.state import collect_state
@@ -87,59 +89,119 @@ def similarity_check(note: Path, config: Path = typer.Option(Path("config/pipeli
 
 
 @app.command()
-def run(agent: str = typer.Option("all", help="bea | isabela | david | basilio | all"), config: Path = typer.Option(Path("config/pipeline.yaml"), exists=True)):
+def run(
+    agent: str = typer.Option("all", help="bea | isabela | david | basilio | all"),
+    config: Path = typer.Option(Path("config/pipeline.yaml"), exists=True),
+    loop: bool = typer.Option(False, "--loop", help="Run in continuous loop mode"),
+    max_cycles: int | None = typer.Option(None, "--max-cycles", help="Maximum number of cycles (only with --loop)"),
+    until_empty: bool = typer.Option(False, "--until-empty", help="Stop when no work is found (only with --loop)"),
+):
     cfg = _load_runtime(config)
+    
+    # Setup logging
+    logging.basicConfig(
+        level=getattr(logging, cfg.logging.level),
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    )
+    
     if agent not in {"bea", "all", "isabela", "david", "basilio"}:
         raise typer.BadParameter("agent must be one of: bea, isabela, david, basilio, all")
-    if agent in {"bea", "all"}:
-        results = BeaProcessor(cfg).run()
-        table = Table(title="Bea results")
-        table.add_column("Title")
-        table.add_column("Score", justify="right")
-        table.add_column("Decision")
-        table.add_column("Path")
-        for item in results:
-            table.add_row(item["title"], f"{item['score']:.6f}", item["decision"], item["path"])
-        console.print(table)
-        if agent == "bea":
-            return
-    if agent in {"isabela", "all"}:
-        results = IsabelaProcessor(cfg).run()
-        table = Table(title="Isabela results")
-        table.add_column("Title")
-        table.add_column("Category")
-        table.add_column("Decision")
-        table.add_column("Path")
-        for item in results:
-            table.add_row(item["title"], item["category"], item["decision"], item["path"])
-        console.print(table)
-        if agent == "isabela":
-            return
-    if agent in {"david", "all"}:
-        results = DavidProcessor(cfg).run()
-        table = Table(title="David results")
-        table.add_column("Title")
-        table.add_column("Category")
-        table.add_column("Decision")
-        table.add_column("Path")
-        for item in results:
-            table.add_row(item["title"], item["category"], item["decision"], item["path"])
-        console.print(table)
-        if agent == "david":
-            return
-    if agent in {"basilio", "all"}:
-        results = BasilioProcessor(cfg).run()
-        table = Table(title="Basilio results")
-        table.add_column("Title")
-        table.add_column("Category")
-        table.add_column("Decision")
-        table.add_column("Path")
-        for item in results:
-            table.add_row(item["title"], item["category"], item["decision"], item["path"])
-        console.print(table)
-        if agent == "basilio":
-            return
-    console.print("Other agents are not implemented yet.")
+    
+    def run_single_cycle() -> dict:
+        """Execute one complete pipeline cycle and return stats."""
+        result = {
+            'work_processed': False,
+            'errors': False,
+            'notes_processed': 0,
+        }
+        
+        try:
+            if agent in {"bea", "all"}:
+                results = BeaProcessor(cfg).run()
+                table = Table(title="Bea results")
+                table.add_column("Title")
+                table.add_column("Score", justify="right")
+                table.add_column("Decision")
+                table.add_column("Path")
+                for item in results:
+                    table.add_row(item["title"], f"{item['score']:.6f}", item["decision"], item["path"])
+                console.print(table)
+                if results:
+                    result['work_processed'] = True
+                    result['notes_processed'] += len(results)
+                if agent == "bea":
+                    return result
+            
+            if agent in {"isabela", "all"}:
+                results = IsabelaProcessor(cfg).run()
+                table = Table(title="Isabela results")
+                table.add_column("Title")
+                table.add_column("Category")
+                table.add_column("Decision")
+                table.add_column("Path")
+                for item in results:
+                    table.add_row(item["title"], item["category"], item["decision"], item["path"])
+                console.print(table)
+                if results:
+                    result['work_processed'] = True
+                    result['notes_processed'] += len(results)
+                if agent == "isabela":
+                    return result
+            
+            if agent in {"david", "all"}:
+                results = DavidProcessor(cfg).run()
+                table = Table(title="David results")
+                table.add_column("Title")
+                table.add_column("Category")
+                table.add_column("Decision")
+                table.add_column("Path")
+                for item in results:
+                    table.add_row(item["title"], item["category"], item["decision"], item["path"])
+                console.print(table)
+                if results:
+                    result['work_processed'] = True
+                    result['notes_processed'] += len(results)
+                if agent == "david":
+                    return result
+            
+            if agent in {"basilio", "all"}:
+                results = BasilioProcessor(cfg).run()
+                table = Table(title="Basilio results")
+                table.add_column("Title")
+                table.add_column("Category")
+                table.add_column("Decision")
+                table.add_column("Path")
+                for item in results:
+                    table.add_row(item["title"], item["category"], item["decision"], item["path"])
+                console.print(table)
+                if results:
+                    result['work_processed'] = True
+                    result['notes_processed'] += len(results)
+                if agent == "basilio":
+                    return result
+            
+            if agent == "all":
+                console.print("All agents completed.")
+                
+        except Exception as e:
+            logger = logging.getLogger(__name__)
+            logger.error(f"Error in cycle: {e}", exc_info=True)
+            result['errors'] = True
+        
+        return result
+    
+    if loop:
+        logger = logging.getLogger(__name__)
+        logger.info("Running in loop mode")
+        orchestrator = LoopOrchestrator(cfg)
+        orchestrator.run_loop(
+            run_single_cycle=run_single_cycle,
+            max_cycles=max_cycles,
+            until_empty=until_empty,
+        )
+    else:
+        # Single execution mode (existing behavior)
+        run_single_cycle()
 
 
 @app.command()
