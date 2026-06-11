@@ -1,0 +1,6 @@
+- Priorizar claridad, precisión y utilidad práctica.
+- Evitar relleno y frases vacías.
+- Mantener continuidad lógica entre secciones.
+- Usar lenguaje natural y profesional.
+- No incluir placeholders ni notas internas.
+- Desarrollar cada sección con contenido suficiente.

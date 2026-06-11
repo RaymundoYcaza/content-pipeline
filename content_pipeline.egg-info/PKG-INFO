@@ -1,0 +1,52 @@
+Metadata-Version: 2.4
+Name: content-pipeline
+Version: 0.1.0
+Summary: Deterministic AI-assisted content pipeline
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+Requires-Dist: typer[all]>=0.12
+Requires-Dist: python-frontmatter>=1.1.0
+Requires-Dist: PyYAML>=6.0.1
+Requires-Dist: requests>=2.32.0
+Requires-Dist: httpx>=0.27.0
+Requires-Dist: numpy>=1.26.0
+Requires-Dist: scikit-learn>=1.5.0
+Requires-Dist: rich>=13.7.0
+Requires-Dist: pydantic>=2.7.0
+
+# Content Pipeline
+
+Pipeline determinista de creación de contenido asistido por IA.
+
+## Objetivo
+
+Python controla estado, validaciones, rutas, similitud, retries y delays. La IA actúa como función inteligente en etapas definidas del pipeline.
+
+## Stack inicial
+
+- Python 3.11+
+- Typer para CLI
+- Frontmatter YAML en archivos Markdown
+- Ollama y OpenRouter como proveedores configurables
+- Embeddings vía API para similitud semántica
+
+## Windows 10 quick start
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -e .
+copy .env.example .env
+pipeline doctor
+pipeline state
+```
+
+## Estructura de stages
+
+- propuestas
+- temas
+- en_redaccion
+- en_edicion
+- revision_humana
+- descartados
+- publicados

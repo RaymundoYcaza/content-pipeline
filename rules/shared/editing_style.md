@@ -1,0 +1,5 @@
+- Priorizar precisión y legibilidad.
+- Eliminar redundancias.
+- Evitar frases vacías.
+- Mantener el tono editorial consistente.
+- No introducir secciones nuevas salvo que sean necesarias para claridad.

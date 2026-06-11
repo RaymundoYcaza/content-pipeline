@@ -1,0 +1,4 @@
+- Claridad antes que creatividad vacía.
+- Evitar secciones redundantes.
+- Mantener una jerarquía lógica de encabezados.
+- Priorizar utilidad práctica.
