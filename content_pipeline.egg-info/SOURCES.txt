@@ -2,6 +2,10 @@ README.md
 pyproject.toml
 ./pipeline/__init__.py
 ./pipeline/cli.py
+./pipeline/editorial_config.py
+./pipeline/editorial_prompt_context.py
+./pipeline/editorial_validator.py
+./pipeline/voice_validator.py
 ./pipeline/agents/__init__.py
 ./pipeline/agents/basilio.py
 ./pipeline/agents/bea.py
@@ -44,11 +48,13 @@ pipeline/core/embeddings.py
 pipeline/core/env.py
 pipeline/core/frontmatter_manager.py
 pipeline/core/http_clients.py
+pipeline/core/loop_orchestrator.py
 pipeline/core/markdown_utils.py
 pipeline/core/prompts.py
 pipeline/core/provider_router.py
 pipeline/core/retry.py
 pipeline/core/similarity_engine.py
 pipeline/core/state.py
+pipeline/core/throttling.py
 pipeline/core/validators.py
 pipeline/prompts/__init__.py

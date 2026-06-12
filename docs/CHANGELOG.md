@@ -1,5 +1,26 @@
 # CHANGELOG
 
+## [0.3.0-patch.1] - 2026-06-12
+
+### Fixed
+- Eliminada doble llamada a `load_editorial_config` y `build_editorial_context` en `DavidProcessor.run()`.
+- Corregida detección de pasos accionables para listas numeradas de 2+ dígitos (`has_actionable_steps`).
+- Corregida `get_first_sentence` para ignorar encabezados H2/H3, no solo H1.
+- Corregida `build_editorial_context` para omitir sección "Contenido obligatorio" cuando no hay ítems.
+- Añadida validación de campos extra en `load_editorial_config` (filtra campos desconocidos del YAML).
+- Añadida validación de valor de `profile` contra valores permitidos (`shallow`, `medium`, `deep`).
+
+### Added
+- `pipeline/voice_validator.py`: validador determinista de voz editorial (frases prohibidas, emojis, despedidas, formalidad, frase de acción).
+- `rules/revision_humana/checklist.md`: checklist formal de revisión humana con fases A–E.
+- David ahora carga y pasa `author_voice.md` a su prompt (`rules/david/input.md` actualizado).
+- Basilio ahora carga y pasa `author_voice.md` a su prompt (`rules/basilio/input.md` actualizado).
+- Basilio ahora ejecuta `validate_editorial_output` sobre su output antes de promover.
+- David ahora lee `depth_profile` del frontmatter de cada nota y lo pasa como override al validador.
+- Isabela ahora recibe restricciones duras de voz en su prompt de input.
+- El validador de hook ahora lee `hook_requirements` del config cuando están disponibles.
+- `count_sections` ahora cuenta también secciones H3 para evaluar profundidad estructural.
+
 ## [0.3.0] - 2026-06-11
 
 ### Added

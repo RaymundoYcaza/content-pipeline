@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import List, Optional
+import re
 from pipeline.editorial_config import EditorialConfig
 
 
@@ -17,7 +18,11 @@ def count_words(text: str) -> int:
 
 
 def count_sections(text: str) -> int:
-    return sum(1 for line in text.splitlines() if line.strip().startswith("## "))
+    """Cuenta secciones de nivel H2 y H3 para evaluar profundidad estructural."""
+    return sum(
+        1 for line in text.splitlines()
+        if line.strip().startswith("## ") or line.strip().startswith("### ")
+    )
 
 
 def has_examples(text: str) -> bool:
@@ -27,21 +32,25 @@ def has_examples(text: str) -> bool:
 
 
 def has_actionable_steps(text: str) -> bool:
-    """Detecta pasos accionables por listas numeradas o encabezados tipo 'Paso N'."""
+    """Detecta pasos accionables por listas numeradas (N. o N)) o encabezados tipo 'Paso N'."""
+    pattern = re.compile(r"^\s*\d+[.)]\s+\S")
     lines = text.splitlines()
-    numbered = sum(1 for l in lines if l.strip() and l.strip()[0].isdigit() and l.strip()[1:3] in (". ", ") "))
+    numbered = sum(1 for line in lines if pattern.match(line))
     return numbered >= 2
 
 
 def get_first_sentence(text: str) -> str:
+    """Retorna la primera línea de contenido real, ignorando todos los encabezados Markdown."""
     stripped = text.strip()
-    # Ignorar el título H1 si lo hay
-    lines = [l.strip() for l in stripped.splitlines() if l.strip() and not l.strip().startswith("# ")]
+    heading_pattern = re.compile(r"^#{1,6}\s")
+    lines = [
+        l.strip()
+        for l in stripped.splitlines()
+        if l.strip() and not heading_pattern.match(l.strip())
+    ]
     if not lines:
         return ""
-    first_line = lines[0]
-    # Tomar hasta el primer punto final
-    return first_line.split(".")[0]
+    return lines[0].split(".")[0]
 
 
 def validate_editorial_output(
@@ -97,17 +106,33 @@ def validate_editorial_output(
                 )
                 break
 
-    # Hook ausente (heurística: segunda persona o fricción en las primeras 3 líneas)
+    # Hook ausente: usar señales del config si existen, o fallback a lista interna
     if vp.reject_if_hook_missing and config.opening_policy.first_paragraph_must_hook:
         opening_block = " ".join(
             l.strip() for l in text.strip().splitlines()[:6]
             if l.strip() and not l.strip().startswith("#")
         ).lower()
-        hook_signals = [
+        # Señales base (hardcoded como fallback)
+        _DEFAULT_HOOK_SIGNALS = [
             "seguramente", "imagina", "si estás", "te pasa", "¿alguna vez",
             "cuando ", "ya te has", "el problema", "suele ocurrir", "a diario",
         ]
-        if not any(sig in opening_block for sig in hook_signals):
+        # Mapa semántico: nombre de requirement → señales textuales
+        _REQUIREMENT_SIGNALS: dict[str, list[str]] = {
+            "problem_situated_context": ["el problema", "suele ocurrir", "falla cuando", "ocurre cuando"],
+            "audience_specific_scene": ["imagina que", "si estás", "cuando trabajas", "cuando tratas"],
+            "second_person_context": ["seguramente", "ya te has", "te pasa", "¿alguna vez"],
+            "practical_tension": ["a diario", "cada vez que", "sin darte cuenta", "tarde o temprano"],
+        }
+        if config.hook_requirements:
+            effective_signals: list[str] = []
+            for req in config.hook_requirements:
+                effective_signals.extend(_REQUIREMENT_SIGNALS.get(req, []))
+            if not effective_signals:
+                effective_signals = _DEFAULT_HOOK_SIGNALS
+        else:
+            effective_signals = _DEFAULT_HOOK_SIGNALS
+        if not any(sig in opening_block for sig in effective_signals):
             reasons.append(
                 "El primer bloque no contiene un gancho contextual reconocible."
             )

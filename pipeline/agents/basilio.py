@@ -5,6 +5,8 @@ from pipeline.core.frontmatter_manager import FrontmatterManager
 from pipeline.core.prompts import PromptLoader
 from pipeline.core.provider_router import ProviderRouter
 from pipeline.core.validators import validate_edited_draft
+from pipeline.editorial_config import load_editorial_config
+from pipeline.editorial_validator import validate_editorial_output
 
 
 class BasilioProcessor:
@@ -28,6 +30,8 @@ class BasilioProcessor:
         input_template = self.prompts.load("basilio/input.md")
         output_schema = self.prompts.load("basilio/output_schema.md")
         editing_style = self.prompts.load("shared/editing_style.md")
+        author_voice = self.prompts.load("shared/author_voice.md")
+        editorial_config = load_editorial_config()
         client = self.router.text_client()
         results = []
 
@@ -39,6 +43,8 @@ class BasilioProcessor:
             if not title or not draft:
                 continue
 
+            depth_profile_override = str(post.metadata.get("depth_profile", "")).strip() or None
+
             rendered_input = self.prompts.render(
                 input_template,
                 {
@@ -46,6 +52,7 @@ class BasilioProcessor:
                     "category": category,
                     "draft": draft,
                     "editing_style": editing_style,
+                    "author_voice": author_voice,
                     "output_schema": output_schema,
                 },
             )
@@ -56,6 +63,29 @@ class BasilioProcessor:
             ]
 
             edited = client.chat(messages).strip()
+
+            editorial_result = validate_editorial_output(
+                edited,
+                editorial_config,
+                depth_profile_override=depth_profile_override,
+            )
+
+            if not editorial_result.valid:
+                post.metadata["agent"] = "basilio"
+                post.metadata["stage"] = "en_edicion"
+                post.metadata["stage_status"] = "rejected"
+                post.metadata["rejection_reason"] = "; ".join(editorial_result.reasons)
+                self.fm.save(post)
+                results.append(
+                    {
+                        "title": title,
+                        "category": category,
+                        "decision": "rejected",
+                        "path": str(note_path),
+                    }
+                )
+                continue
+
             is_valid, issues = validate_edited_draft(draft, edited)
 
             post.metadata["agent"] = "basilio"

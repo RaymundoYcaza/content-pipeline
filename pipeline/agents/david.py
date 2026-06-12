@@ -29,19 +29,10 @@ class DavidProcessor:
     def run(self) -> list[dict]:
 
         base_system_prompt = self.prompts.load("david/system.md")
-
-        editorial_config = load_editorial_config()
-        editorial_context = build_editorial_context(editorial_config)
-
-        system_prompt = (
-            base_system_prompt
-            + "\n\n"
-            + editorial_context
-        )
-
         input_template = self.prompts.load("david/input.md")
         output_schema = self.prompts.load("david/output_schema.md")
         draft_style = self.prompts.load("shared/draft_style.md")
+        author_voice = self.prompts.load("shared/author_voice.md")
         client = self.router.text_client()
         results = []
 
@@ -53,8 +44,20 @@ class DavidProcessor:
             if not title or not outline:
                 continue
 
+            # Leer depth_profile del frontmatter de la nota si existe
+            depth_profile_override = str(post.metadata.get("depth_profile", "")).strip() or None
+
             editorial_config = load_editorial_config()
-            editorial_context = build_editorial_context(editorial_config)
+            editorial_context = build_editorial_context(
+                editorial_config,
+                depth_override=depth_profile_override,
+            )
+
+            system_prompt = (
+                base_system_prompt
+                + "\n\n"
+                + editorial_context
+            )
 
             rendered_input = self.prompts.render(
                 input_template,
@@ -64,6 +67,7 @@ class DavidProcessor:
                     "outline": outline,
                     "output_schema": output_schema,
                     "draft_style": draft_style,
+                    "author_voice": author_voice,
                 },
             )
             messages = [
@@ -74,7 +78,8 @@ class DavidProcessor:
 
             editorial_result = validate_editorial_output(
                 draft,
-                editorial_config
+                editorial_config,
+                depth_profile_override=depth_profile_override,
             )
 
             if not editorial_result.valid:
@@ -83,22 +88,16 @@ class DavidProcessor:
                 post.metadata["rejection_reason"] = "; ".join(
                     editorial_result.reasons
                 )
-
                 self.fm.save(post)
-
                 results.append({
                     "title": title,
                     "category": category,
                     "decision": "rejected",
                     "path": str(note_path),
                 })
-
                 continue
 
-            is_valid, issues = validate_draft_against_outline(
-                outline,
-                draft
-            )
+            is_valid, issues = validate_draft_against_outline(outline, draft)
 
             post.metadata["agent"] = "david"
             if not is_valid:

@@ -1,27 +1,7 @@
 ```
-# Python
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-.Python
-env/
-venv/
-.venv/
-.eggs/
-.egg-info/
-
-# Build and distribution artifacts
-dist/
-build/
-*.egg-info/
-
-# Logs
-*.log
-
-# Environment variables
-.env
-.env.local
-.env.*
+# Test files that were deleted
+tests/harness/test_basilio_processor.py
+tests/harness/test_david_processor.py
+tests/harness/test_isabela_processor.py
+tests/harness/test_provider_router.py
 ```
-.aider*
