@@ -4,11 +4,11 @@ project:
   timezone: "America/Guayaquil"
 
 providers:
-  active_text: "openrouter"
+  active_text: "ollama"
   active_embeddings: "ollama"
 
   ollama:
-    target: "cloud"   # cloud | localhost | lan
+    target: "localhost"   # cloud | localhost | lan
     cloud_url: "https://ollama.com"
     localhost_url: "http://localhost:11434"
     lan_url: "http://192.168.100.81:11434"

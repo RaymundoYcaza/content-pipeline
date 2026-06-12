@@ -5,6 +5,9 @@ from pipeline.core.frontmatter_manager import FrontmatterManager
 from pipeline.core.prompts import PromptLoader
 from pipeline.core.provider_router import ProviderRouter
 from pipeline.core.validators import validate_draft_against_outline
+from pipeline.editorial_config import load_editorial_config
+from pipeline.editorial_prompt_context import build_editorial_context
+from pipeline.editorial_validator import validate_editorial_output
 
 
 class DavidProcessor:

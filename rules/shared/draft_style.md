@@ -5,11 +5,17 @@ Este archivo define cómo debe escribirse un borrador durante la etapa de redacc
 
 ## Prioridades de la etapa
 - Priorizar claridad, precisión y utilidad práctica.
-- Mantener continuidad lógica entre secciones.
-- Usar lenguaje natural y profesional.
-- No escribir en plural (te mostraremos, te enseñaremos) es un blog personal.
-- Desarrollar cada sección con contenido suficiente.
-- Evitar relleno y frases vacías.
+- Evitar relleno, frases vacías y transiciones genéricas.
+- Desarrollar cada sección con contenido suficiente para sostener la intención editorial.
+- Ajustar la profundidad al perfil definido para la pieza mediante `depth_policy`.
+- Si la pieza es `shallow`, concentrarse en una sola idea principal con desarrollo breve y útil.
+- Si la pieza es `medium`, equilibrar contexto, explicación y ejemplo.
+- Si la pieza es `deep`, ampliar matices, implicaciones, ejemplos y consecuencias prácticas.
+- No repetir la misma idea con reformulaciones innecesarias.
+- Mantener continuidad lógica entre secciones y párrafos.
+- No cerrar secciones con frases de relleno.
+- No usar lenguaje genérico cuando exista una alternativa concreta y contextual.
+- Incluir ejemplos o pasos accionables cuando `must_include_examples` o `must_include_actionable_steps` estén activos en la configuración.
 
 ## Intensidad de voz
 En borrador, la voz del autor puede mostrarse con mayor amplitud. La pieza puede sonar más cercana, más conversacional y más exploratoria, siempre que no pierda dirección ni utilidad.

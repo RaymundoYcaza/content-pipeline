@@ -5,10 +5,12 @@ Este archivo define el marco universal de estilo para todo el pipeline. Su funci
 
 ## Principios base
 - Claridad antes que creatividad vacía.
-- Evitar secciones redundantes.
+- Evitar secciones redundantes y aperturas genéricas.
 - Mantener una jerarquía lógica de encabezados.
-- Priorizar utilidad práctica.
-- No introducir ruido estilístico que compita con la intención principal del texto.
+- Priorizar utilidad práctica para la audiencia.
+- Buscar una apertura que conecte con el problema o contexto del lector.
+- No usar fórmulas introductorias automáticas si no aportan valor.
+- Respetar la profundidad definida por `depth_policy` y la coherencia estructural de la pieza.
 
 ## Criterios universales
 - Cada sección debe aportar información nueva o una transición necesaria.

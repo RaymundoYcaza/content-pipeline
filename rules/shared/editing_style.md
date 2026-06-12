@@ -4,11 +4,16 @@
 Este archivo define cómo debe refinarse un texto en la etapa de edición. El objetivo es compactar, limpiar y dejar la pieza lista sin borrar su identidad verbal.
 
 ## Prioridades de la etapa
-- Priorizar precisión y legibilidad.
-- Eliminar redundancias.
-- Evitar frases vacías.
-- Mantener el tono editorial consistente.
+- Priorizar precisión, legibilidad y ritmo editorial.
+- Eliminar redundancias, frases vacías y aperturas genéricas.
+- Mantener el tono editorial consistente con la audiencia objetivo.
 - No introducir secciones nuevas salvo que sean necesarias para claridad.
+- La primera frase debe abrir con un gancho contextual, no con una bienvenida genérica.
+- Evitar aperturas como "Bienvenido a...", "En este artículo...", "Hoy vamos a hablar de..." o equivalentes.
+- La introducción debe conectar con una situación real, un problema, una tensión o una expectativa de la audiencia.
+- Preferir inicios que planteen contexto inmediato: un problema recurrente, una escena reconocible o una pregunta útil.
+- Si el texto empieza de forma metadiscursiva o vacía, reescribir la apertura.
+- Aplicar la `opening_policy` y rechazar cualquier inicio que contradiga `opening_blacklist`.
 
 ## Intensidad de voz
 En edición, la voz debe conservarse, pero con mayor control. Esta etapa debe reducir ruido, ajustar ritmo y dejar cada idea en su forma más clara y directa.
