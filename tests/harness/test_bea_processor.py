@@ -26,7 +26,14 @@ def test_bea_rejects_high_similarity(tmp_path: Path, monkeypatch):
 
     note_path = content_root / "propuestas" / "note.md"
     post = frontmatter.loads(
-        """---\ntitle: Cómo organizar un pipeline de contenido con IA\nstage: propuestas\nstage_status: pending\ncreated: x\nupdated: x\n---\nBody"
+        """---
+title: Cómo organizar un pipeline de contenido con IA
+stage: propuestas
+stage_status: pending
+created: x
+updated: x
+---
+Body"""
     )
     note_path.write_text(frontmatter.dumps(post), encoding="utf-8")
 

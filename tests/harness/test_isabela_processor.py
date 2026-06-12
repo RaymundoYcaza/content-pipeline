@@ -43,7 +43,14 @@ def test_isabela_moves_note_to_en_redaccion(tmp_path: Path, monkeypatch):
 
     note_path = content_root / "temas" / "note.md"
     post = frontmatter.loads(
-        """---\ntitle: Cómo organizar un pipeline de contenido con IA\nstage: temas\nstage_status: approved\ncreated: x\nupdated: x\n---\nIdea base"
+        """---
+title: Cómo organizar un pipeline de contenido con IA
+stage: temas
+stage_status: approved
+created: x
+updated: x
+---
+Idea base"""
     )
     note_path.write_text(frontmatter.dumps(post), encoding="utf-8")
 
