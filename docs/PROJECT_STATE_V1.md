@@ -1,4 +1,4 @@
-# Content Pipeline v0.1.0
+# Content Pipeline v0.2.0
 
 ## Resumen
 
@@ -47,6 +47,10 @@ Este proyecto implementa un pipeline determinista de creación de contenido asis
 - Validaciones deterministas mínimas
 - Movimiento de archivos por etapa
 - Tests de harness básicos
+- modo loop explícito desde CLI
+- throttling configurable entre llamadas, etapas y ciclos
+- epera en vacío para operación continua
+- observabilidad básica por ciclo
 
 ### No implementado
 
@@ -55,7 +59,6 @@ Este proyecto implementa un pipeline determinista de creación de contenido asis
 - Cola de revisión humana con checklist formal
 - Fallback automático de proveedor
 - Indexación persistente de embeddings
-- Multi-marca
 
 ## Estructura recomendada del repositorio
 

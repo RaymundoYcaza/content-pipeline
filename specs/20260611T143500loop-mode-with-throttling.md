@@ -234,7 +234,7 @@ Este cambio es una **feature** compatible, por lo que la versión objetivo pasa 
 ## Estado de tareas
 
 - [x] diseñar
-- [ ] implementar
-- [ ] validar
-- [ ] documentar
-- [ ] actualizar versión
+- [x] implementar
+- [x] validar
+- [x] documentar
+- [x] actualizar versión

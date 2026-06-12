@@ -1,47 +1,25 @@
-# Versioning
+# VERSIONING
 
-## Esquema
+## Versión actual objetivo
+0.3.0
 
-Se usa Semantic Versioning:
+## Motivo del incremento
+Este incremento corresponde a una nueva feature editorial:
+- capa de voz de autor;
+- reglas de formalidad por tipo de publicación;
+- frases firma permitidas por contexto;
+- despedidas permitidas;
+- frases prohibidas o de baja prioridad;
+- protocolos repetibles de validación para LLM y humano.
 
-- `MAJOR`: cambios rompientes
-- `MINOR`: nuevas features compatibles
-- `PATCH`: fixes y ajustes compatibles
+## Tipo de cambio
+Minor.
 
-## Versión actual
+## Criterio
+Toda feature nueva incrementa la versión menor cuando no rompe compatibilidad del sistema.
 
-- `0.1.0`
+## Estado
+La versión objetivo ya está definida a nivel documental. La confirmación final de esta versión depende de las pruebas de validación de la nueva capa de voz.
 
-## Estado del release actual
-
-`0.1.0` representa el cierre del ciclo editorial v1:
-
-- Bea v1
-- Isabela v1
-- David v1
-- Basilio v1
-- transición hasta `revision_humana`
-
-## Reglas de incremento
-
-### Feature
-
-- incrementar `MINOR`
-- ejemplo: `0.1.0 -> 0.2.0`
-
-### Fix
-
-- incrementar `PATCH`
-- ejemplo: `0.1.0 -> 0.1.1`
-
-### Breaking change
-
-- incrementar `MAJOR`
-- ejemplo: `0.1.0 -> 1.0.0`
-
-## Archivos que deben reflejar versión
-
-- `pyproject.toml`
-- `docs/VERSIONING.md`
-- `docs/CHANGELOG.md`
-- release/tag Git
+## Próximo ajuste posible
+Si las pruebas revelan un problema de comportamiento o una corrección menor de reglas, el siguiente cambio podría ser un patch sobre `0.3.0`. Si aparecen cambios estructurales no compatibles, se requerirá una revisión mayor.
