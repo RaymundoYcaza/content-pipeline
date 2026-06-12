@@ -4,11 +4,11 @@ project:
   timezone: "America/Guayaquil"
 
 providers:
-  active_text: "ollama"
+  active_text: "openrouter"
   active_embeddings: "ollama"
 
   ollama:
-    target: "localhost"   # cloud | localhost | lan
+    target: "cloud"   # cloud | localhost | lan
     cloud_url: "https://ollama.com"
     localhost_url: "http://localhost:11434"
     lan_url: "http://192.168.100.81:11434"
@@ -18,9 +18,9 @@ providers:
 
   openrouter:
     base_url: "https://openrouter.ai/api/v1"
-    api_key_env_primary: "OPENROUTER_API_KEY"
+    api_key_env_primary: "OPENROUTER_API_KEY_1"
     api_key_env_secondary: "OPENROUTER_API_KEY_2"
-    text_model: ""
+    text_model: "nousresearch/hermes-3-llama-3.1-405b"
     embedding_model: ""
 
 runtime:
