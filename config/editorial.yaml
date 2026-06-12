@@ -1,0 +1,38 @@
+editorial:
+  depth_policy:
+    profile: medium
+    target_words_min: 600
+    target_words_max: 800
+    min_sections: 4
+    max_sections: 7
+    must_include_examples: true
+    must_include_actionable_steps: true
+
+  opening_policy:
+    required: true
+    style: contextual_hook
+    first_paragraph_must_hook: true
+
+  opening_blacklist:
+    - "Bienvenido a"
+    - "En este artículo"
+    - "Hoy vamos a hablar de"
+    - "A continuación"
+    - "En el mundo actual"
+    - "En esta publicación"
+    - "Vamos a explorar"
+    - "Te damos la bienvenida"
+
+  hook_requirements:
+    - problem_situated_context
+    - audience_specific_scene
+    - second_person_context
+    - practical_tension
+
+  validator:
+    reject_if_opening_generic: true
+    reject_if_hook_missing: true
+    reject_if_too_shallow: true
+    reject_if_out_of_length_range: true
+    reject_if_missing_examples_when_required: true
+    reject_if_missing_actionable_steps_when_required: true

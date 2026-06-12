@@ -27,7 +27,18 @@ class DavidProcessor:
         return sorted(folder.glob("*.md"))
 
     def run(self) -> list[dict]:
-        system_prompt = self.prompts.load("david/system.md")
+
+        base_system_prompt = self.prompts.load("david/system.md")
+
+        editorial_config = load_editorial_config()
+        editorial_context = build_editorial_context(editorial_config)
+
+        system_prompt = (
+            base_system_prompt
+            + "\n\n"
+            + editorial_context
+        )
+
         input_template = self.prompts.load("david/input.md")
         output_schema = self.prompts.load("david/output_schema.md")
         draft_style = self.prompts.load("shared/draft_style.md")
@@ -41,6 +52,9 @@ class DavidProcessor:
             outline = str(post.content or "").strip()
             if not title or not outline:
                 continue
+
+            editorial_config = load_editorial_config()
+            editorial_context = build_editorial_context(editorial_config)
 
             rendered_input = self.prompts.render(
                 input_template,
@@ -57,7 +71,35 @@ class DavidProcessor:
                 {"role": "user", "content": rendered_input},
             ]
             draft = client.chat(messages).strip()
-            is_valid, issues = validate_draft_against_outline(outline, draft)
+
+            editorial_result = validate_editorial_output(
+                draft,
+                editorial_config
+            )
+
+            if not editorial_result.valid:
+                post.metadata["stage"] = "en_redaccion"
+                post.metadata["stage_status"] = "rejected"
+                post.metadata["rejection_reason"] = "; ".join(
+                    editorial_result.reasons
+                )
+
+                self.fm.save(post)
+
+                results.append({
+                    "title": title,
+                    "category": category,
+                    "decision": "rejected",
+                    "path": str(note_path),
+                })
+
+                continue
+
+            is_valid, issues = validate_draft_against_outline(
+                outline,
+                draft
+            )
+
             post.metadata["agent"] = "david"
             if not is_valid:
                 post.metadata["stage"] = "en_redaccion"
