@@ -8,5 +8,8 @@ Notas actuales:
 Reglas de estilo:
 {{ style_rules }}
 
+Restricciones editoriales de voz:
+{{ voice_restrictions }}
+
 Formato de salida requerido:
 {{ output_schema }}

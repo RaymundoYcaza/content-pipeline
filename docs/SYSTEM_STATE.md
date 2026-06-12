@@ -25,11 +25,17 @@ El pipeline mantiene su filosofía determinista: Python orquesta, las reglas viv
 - Observabilidad básica por ciclo.
 - Capa editorial de voz definida en reglas compartidas.
 - Matriz por etapa para modular cercanía, contundencia y formalidad.
+- Validador determinista de voz editorial (`voice_validator.py`).
+- Checklist formal de revisión humana en `rules/revision_humana/checklist.md`.
+- David lee `depth_profile` del frontmatter de cada nota para override de profundidad.
+- David y Basilio cargan `author_voice.md` en sus prompts.
+- Isabela recibe restricciones duras de voz en su input.
+- Validación editorial por Basilio antes de promover a `revision_humana`.
+- Lector de `hook_requirements` del config en el validador de apertura.
 
 ### En progreso
-- Integración definitiva de `rules/shared/author_voice.md` en el flujo operativo.
-- Ajuste final de `rules/shared/style.md`, `rules/shared/draft_style.md` y `rules/shared/editing_style.md`.
-- Validación de compatibilidad de la voz con piezas formales, tutoriales y publicaciones breves.
+- Pruebas funcionales de la capa de voz con al menos tres casos: pieza formal, tutorial y publicación breve.
+- Integración de `voice_validator.py` en el flujo de David y Basilio para validación dura de voz.
 
 ### Pendiente
 - Publicación.

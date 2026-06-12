@@ -36,6 +36,7 @@ class IsabelaProcessor:
         input_template = self.prompts.load("isabela/input.md")
         output_schema = self.prompts.load("isabela/output_schema.md")
         style_rules = self.prompts.load("shared/style.md")
+        voice_restrictions = self.prompts.load("shared/author_voice.md")
         client = self.router.text_client()
         results = []
 
@@ -53,6 +54,7 @@ class IsabelaProcessor:
                     "body": str(post.content or "").strip(),
                     "output_schema": output_schema,
                     "style_rules": style_rules,
+                    "voice_restrictions": voice_restrictions,
                 },
             )
             messages = [

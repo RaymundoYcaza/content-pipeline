@@ -9,5 +9,8 @@ Esquema aprobado:
 Reglas de redacción:
 {{ draft_style }}
 
+Voz editorial del autor:
+{{ author_voice }}
+
 Formato de salida requerido:
 {{ output_schema }}

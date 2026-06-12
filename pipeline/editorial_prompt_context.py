@@ -28,13 +28,16 @@ def build_editorial_context(config: EditorialConfig, depth_override: str = None)
 
     blacklist_formatted = "\n".join(f'  - "{b}"' for b in config.opening_blacklist)
 
-    examples_instruction = (
-        "- Debes incluir al menos un ejemplo concreto."
-        if dp.must_include_examples else ""
-    )
-    steps_instruction = (
-        "- Debes incluir pasos accionables numerados."
-        if dp.must_include_actionable_steps else ""
+    required_items: list[str] = []
+    if dp.must_include_examples:
+        required_items.append("- Debes incluir al menos un ejemplo concreto.")
+    if dp.must_include_actionable_steps:
+        required_items.append("- Debes incluir pasos accionables numerados.")
+
+    mandatory_block = (
+        "### Contenido obligatorio\n" + "\n".join(required_items)
+        if required_items
+        else ""
     )
 
     return f"""
@@ -49,7 +52,5 @@ La primera frase debe abrir con un gancho contextual que conecte con una situaci
 No uses introducciones genéricas como:
 {blacklist_formatted}
 
-### Contenido obligatorio
-{examples_instruction}
-{steps_instruction}
+{mandatory_block}
 """.strip()

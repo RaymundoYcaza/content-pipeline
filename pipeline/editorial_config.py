@@ -41,6 +41,16 @@ class EditorialConfig:
     validator: ValidatorPolicy = field(default_factory=ValidatorPolicy)
 
 
+_ALLOWED_PROFILES: frozenset[str] = frozenset({"shallow", "medium", "deep"})
+
+
+def _filter_fields(raw: dict, dataclass_type) -> dict:
+    """Retorna solo los campos que el dataclass acepta, ignorando extras."""
+    import dataclasses
+    known = {f.name for f in dataclasses.fields(dataclass_type)}
+    return {k: v for k, v in raw.items() if k in known}
+
+
 def load_editorial_config(config_path: Path = Path("config/editorial.yaml")) -> EditorialConfig:
     if not config_path.exists():
         return EditorialConfig()
@@ -50,12 +60,21 @@ def load_editorial_config(config_path: Path = Path("config/editorial.yaml")) -> 
 
     ed = raw.get("editorial", {})
 
-    depth_raw = ed.get("depth_policy", {})
-    opening_raw = ed.get("opening_policy", {})
-    validator_raw = ed.get("validator", {})
+    depth_raw = _filter_fields(ed.get("depth_policy", {}), DepthPolicy)
+    opening_raw = _filter_fields(ed.get("opening_policy", {}), OpeningPolicy)
+    validator_raw = _filter_fields(ed.get("validator", {}), ValidatorPolicy)
+
+    depth_policy = DepthPolicy(**depth_raw)
+
+    # Validar que el perfil sea uno de los valores permitidos
+    if depth_policy.profile not in _ALLOWED_PROFILES:
+        raise ValueError(
+            f"editorial.yaml: depth_policy.profile='{depth_policy.profile}' no es válido. "
+            f"Valores permitidos: {sorted(_ALLOWED_PROFILES)}"
+        )
 
     return EditorialConfig(
-        depth_policy=DepthPolicy(**depth_raw),
+        depth_policy=depth_policy,
         opening_policy=OpeningPolicy(**opening_raw),
         opening_blacklist=ed.get("opening_blacklist", []),
         hook_requirements=ed.get("hook_requirements", []),
