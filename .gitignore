@@ -1,1 +1,7 @@
-Nothing should be ignored based on the provided file changes, as they only include test Python files (.py) which are source code files that should not be ignored.
+```
+# Test files that were deleted
+tests/harness/test_basilio_processor.py
+tests/harness/test_david_processor.py
+tests/harness/test_isabela_processor.py
+tests/harness/test_provider_router.py
+```
